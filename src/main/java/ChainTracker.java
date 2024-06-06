@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public class ChainTracker {
+public class ChainTracker {
+    public static void main(String[] args) {
+
+    }
 }
