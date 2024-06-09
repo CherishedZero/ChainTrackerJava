@@ -27,14 +27,36 @@ public class Chain {
         return values;
     }
 
-    public List<String> getValuesByKey(String key) {
-        ArrayList<String> values = new ArrayList<>();
+    public List<String> getLocations() {
+        ArrayList<String> locations = new ArrayList<>();
         for (ChainLink link: chain) {
-            if(link.getKey().equals(key)) {
-                values.add(link.getValue());
+            for (String location: link.getLocations()) {
+                if (!locations.contains(location) && !location.equals("N/A") && !location.isEmpty()) {
+                    locations.add(location);
+                }
             }
         }
-        return values;
+        return locations;
+    }
+
+    public List<String> getLocationsByKey(String key) {
+        List<String> locations = new ArrayList<>();
+        for (ChainLink link: chain) {
+            if(link.getKey().equals(key)) {
+                locations = link.getLocations();
+            }
+        }
+        return locations;
+    }
+
+    public String getValueByKey(String key) {
+        String value = "No Value";
+        for (ChainLink link: chain) {
+            if(link.getKey().equals(key)) {
+                value = link.getValue();
+            }
+        }
+        return value;
     }
 
     public List<String> getKeysByValue(String value) {
@@ -45,5 +67,20 @@ public class Chain {
             }
         }
         return keys;
+    }
+
+    public ChainLink getLinkByKey(String key) {
+        ChainLink outputLink = new ChainLink();
+        boolean foundLink = false;
+        for (ChainLink link: chain) {
+            if(link.getKey().equals(key)) {
+                outputLink = link;
+                foundLink = true;
+            }
+        }
+        if (!foundLink) {
+            outputLink.setKey("No Link");
+        }
+        return (outputLink);
     }
 }
