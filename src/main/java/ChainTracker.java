@@ -153,7 +153,8 @@ public class ChainTracker {
 
     private static void WriteChain(Chain currentChain, String keyPokemon) {
         String chainOutput = CreateChainOutput(currentChain, new StringBuilder(), keyPokemon, 0).toString();
-        String lastLink = Arrays.stream(chainOutput.split(" -> ")).toList().getLast().replace(GREEN, "");
+        List<String> listOfOutput= List.of(chainOutput.split(" -> "));
+        String lastLink = listOfOutput.get(listOfOutput.size() - 1).replace(GREEN, "");
         String loopInfo = "";
         if(!lastLink.equals("???")) {
             chainOutput = chainOutput.replace(lastLink, RED+lastLink+GRAY);
@@ -275,7 +276,8 @@ public class ChainTracker {
             if (!link.getLocations().contains("N/A")) {
                 iterator++;
                 String chainOutput = CreateChainOutput(currentChain, new StringBuilder(), link.getKey(), 0).toString();
-                String lastLink = Arrays.stream(chainOutput.split(" -> ")).toList().getLast().replace(GREEN, "");
+                List<String> listOfOutput = List.of(chainOutput.split(" -> "));
+                String lastLink = listOfOutput.get(listOfOutput.size() - 1).replace(GREEN, "");
                 if (!lastLink.equals("???")) {
                     chainOutput = chainOutput.replace(lastLink, RED + lastLink + GRAY);
                 }
@@ -311,8 +313,8 @@ public class ChainTracker {
         }
     }
 
-    public static List<String> CreateRoutes (Chain currentChain, String currentRoute, String currentPokemon, List<String> accumulatedRoutes) {
-        if (currentChain.getValues().contains(currentPokemon)) {
+    public static List<String> CreateRoutes (Chain currentChain, String currentRoute, String currentPokemon, List<String> accumulatedRoutes) { //Fix this
+        if (currentChain.getValues().contains(currentPokemon) && !Arrays.stream(currentRoute.split(" -> ")).toList().contains(currentPokemon)) {
             for (String key: currentChain.getKeysByValue(currentPokemon)) {
                 CreateRoutes(currentChain, key + (currentChain.getLocationsByKey(key).contains("N/A") ? "" : " " + GRAY + currentChain.getLocationsByKey(key).toString() + RESET) + " -> " + currentRoute, key, accumulatedRoutes);
             }
