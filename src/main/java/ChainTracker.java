@@ -259,9 +259,11 @@ public class ChainTracker {
         if(iteration == 0) {
             currentOutput.append(GREEN).append(key).append(GRAY);
         }
-        if (currentChain.getKeys().contains(key) && !Arrays.stream(currentOutput.toString().split(" -> ")).toList().contains(currentChain.getValueByKey(key))) {
+        String next = currentChain.getValueByKey(key);
+        boolean inOutput = currentOutput.toString().matches(String.format(".*(%s).*", next));
+        if (currentChain.getKeys().contains(key) && !inOutput) {
             CreateChainOutput(currentChain, currentOutput.append(" -> ").append(currentChain.getValueByKey(key)), currentChain.getValueByKey(key), iteration + 1);
-        } else if (Arrays.stream(currentOutput.toString().split(" -> ")).toList().contains(currentChain.getValueByKey(key))) {
+        } else if (inOutput) {
             currentOutput.append(" -> ").append(currentChain.getValueByKey(key));
         } else {
             currentOutput.append(" -> ").append(GREEN).append("???");
@@ -314,7 +316,7 @@ public class ChainTracker {
     }
 
     public static List<String> CreateRoutes (Chain currentChain, String currentRoute, String currentPokemon, List<String> accumulatedRoutes) { //Fix this
-        if (currentChain.getValues().contains(currentPokemon) && !Arrays.stream(currentRoute.split(" -> ")).toList().contains(currentPokemon)) {
+        if (currentChain.getValues().contains(currentPokemon) && !currentRoute.matches(String.format(".*(%s).*(%s).*", currentPokemon, currentPokemon))) {
             for (String key: currentChain.getKeysByValue(currentPokemon)) {
                 CreateRoutes(currentChain, key + (currentChain.getLocationsByKey(key).contains("N/A") ? "" : " " + GRAY + currentChain.getLocationsByKey(key).toString() + RESET) + " -> " + currentRoute, key, accumulatedRoutes);
             }
