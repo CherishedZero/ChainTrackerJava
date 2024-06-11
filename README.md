@@ -1,5 +1,4 @@
 <h1>Welcome to the Pokemon Infinite Fusion PokeRadar Chain Tracker for Randomized Mode.</h1><br>
-<br>
 <h3>Reason this project was created:</h3><br>
 We determined that the PokeRadar is deterministic when using randomized settings in PIF, so this program was created to allow us to track our chains to keep track of available pokemon.<br>
 <br>
