@@ -153,14 +153,15 @@ public class ChainTracker {
 
     private static void WriteChain(Chain currentChain, String keyPokemon) {
         String chainOutput = CreateChainOutput(currentChain, new StringBuilder(), keyPokemon, 0).toString();
-        List<String> listOfOutput= List.of(chainOutput.split(" -> "));
-        String lastLink = listOfOutput.get(listOfOutput.size() - 1).replace(GREEN, "");
+        String lastLink = chainOutput.substring(chainOutput.lastIndexOf(" ") + 1);
         String loopInfo = "";
-        if(!lastLink.equals("???")) {
-            chainOutput = chainOutput.replace(lastLink, RED+lastLink+GRAY);
+        if (lastLink.equals("???")) {
+            chainOutput = colorizeChain(chainOutput, GREEN);
+        } else {
             loopInfo = " that ends in a loop";
+            chainOutput = colorizeChain(chainOutput, RED);
         }
-        System.out.printf("You've entered an existing chain%s:%n%s%s%n", loopInfo, chainOutput, RESET);
+        System.out.printf("You've entered an existing chain%s:%n%s%n", loopInfo, chainOutput);
     }
 
     public static void ViewLinks (Chain currentChain) {
@@ -257,7 +258,7 @@ public class ChainTracker {
 
     public static StringBuilder CreateChainOutput (Chain currentChain, StringBuilder currentOutput, String key, int iteration) {
         if(iteration == 0) {
-            currentOutput.append(GREEN).append(key).append(GRAY);
+            currentOutput.append(key);
         }
         String next = currentChain.getValueByKey(key);
         boolean inOutput = currentOutput.toString().matches(String.format(".*(%s).*", next));
@@ -266,7 +267,7 @@ public class ChainTracker {
         } else if (inOutput) {
             currentOutput.append(" -> ").append(currentChain.getValueByKey(key));
         } else {
-            currentOutput.append(" -> ").append(GREEN).append("???");
+            currentOutput.append(" -> ").append("???");
         }
         return currentOutput;
     }
@@ -278,12 +279,13 @@ public class ChainTracker {
             if (!link.getLocations().contains("N/A")) {
                 iterator++;
                 String chainOutput = CreateChainOutput(currentChain, new StringBuilder(), link.getKey(), 0).toString();
-                List<String> listOfOutput = List.of(chainOutput.split(" -> "));
-                String lastLink = listOfOutput.get(listOfOutput.size() - 1).replace(GREEN, "");
-                if (!lastLink.equals("???")) {
-                    chainOutput = chainOutput.replace(lastLink, RED + lastLink + GRAY);
+                String lastLink = chainOutput.substring(chainOutput.lastIndexOf(" ") + 1);
+                if (lastLink.equals("???")) {
+                    chainOutput = colorizeChain(chainOutput, GREEN);
+                } else {
+                    chainOutput = colorizeChain(chainOutput, RED);
                 }
-                System.out.printf("%d) %s%s%n", iterator, chainOutput, RESET);
+                System.out.printf("%d) %s%n", iterator, chainOutput);
             }
         }
     }
@@ -297,7 +299,7 @@ public class ChainTracker {
                     pokemonAtLocation.add(link.getKey());
                 }
             }
-            System.out.printf("%s%s%s: %s%n", GREEN, location, RESET, String.join(", ", pokemonAtLocation));
+            System.out.printf("%s: %s%n", colorText(location, GREEN, RESET), String.join(", ", pokemonAtLocation));
         }
     }
 
@@ -307,7 +309,7 @@ public class ChainTracker {
         String desiredPokemon = input.nextLine();
         if (currentChain.getValues().contains(desiredPokemon)) {
             System.out.printf("%nAll potential chains leading to %s:%n", desiredPokemon);
-            for (String route : CreateRoutes(currentChain, GREEN + desiredPokemon + RESET, desiredPokemon, new ArrayList<>())) {
+            for (String route : CreateRoutes(currentChain, colorText(desiredPokemon, GREEN, RESET), desiredPokemon, new ArrayList<>())) {
                 System.out.println(route);
             }
         } else {
@@ -315,14 +317,30 @@ public class ChainTracker {
         }
     }
 
-    public static List<String> CreateRoutes (Chain currentChain, String currentRoute, String currentPokemon, List<String> accumulatedRoutes) { //Fix this
+    public static List<String> CreateRoutes (Chain currentChain, String currentRoute, String currentPokemon, List<String> accumulatedRoutes) {
         if (currentChain.getValues().contains(currentPokemon) && !currentRoute.matches(String.format(".*(%s).*(%s).*", currentPokemon, currentPokemon))) {
             for (String key: currentChain.getKeysByValue(currentPokemon)) {
-                CreateRoutes(currentChain, key + (currentChain.getLocationsByKey(key).contains("N/A") ? "" : " " + GRAY + currentChain.getLocationsByKey(key).toString() + RESET) + " -> " + currentRoute, key, accumulatedRoutes);
+                CreateRoutes(currentChain, key + (currentChain.getLocationsByKey(key).contains("N/A") ? "" : " " + colorText(currentChain.getLocationsByKey(key).toString(), GRAY, RESET)) + " -> " + currentRoute, key, accumulatedRoutes);
             }
         } else {
             accumulatedRoutes.add(currentRoute);
         }
         return accumulatedRoutes;
+    }
+
+    public static String colorText (String text, String colorToBe, String colorAfter) {
+        return colorToBe + text + colorAfter;
+    }
+
+    private static String colorizeChain(String chain, String endColor) {
+        String startingLink = chain.substring(0, chain.indexOf(" "));
+        String endingLink = chain.substring(chain.lastIndexOf(" ") + 1);
+        String output;
+        if (startingLink.equals(endingLink)) {
+            output = chain.replaceAll(endingLink, colorText(endingLink, endColor, GRAY));
+        } else {
+            output = chain.replaceAll(endingLink, colorText(endingLink, endColor, GRAY)).replace(startingLink, colorText(startingLink, GREEN, RESET));
+        }
+        return output + RESET;
     }
 }
