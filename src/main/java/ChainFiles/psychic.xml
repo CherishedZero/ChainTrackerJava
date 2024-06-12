@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<chain>
+    <Chain>
+        <key>Cyndaquil</key>
+        <value>Pikachu</value>
+        <locations>Route 24</locations>
+    </Chain>
+    <Chain>
+        <key>Pichu</key>
+        <value>Metapod</value>
+        <locations>Route 24</locations>
+        <locations>National Park</locations>
+    </Chain>
+    <Chain>
+        <key>Kakuna</key>
+        <value>Metapod</value>
+        <locations>Route 24</locations>
+    </Chain>
+    <Chain>
+        <key>Metapod</key>
+        <value>Sunkern</value>
+        <locations>National Park</locations>
+    </Chain>
+    <Chain>
+        <key>Sunkern</key>
+        <value>Kakuna</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Happiny</key>
+        <value>Shedinja</value>
+        <locations>Route 24</locations>
+    </Chain>
+    <Chain>
+        <key>Shedinja</key>
+        <value>Smeargle</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Smeargle</key>
+        <value>Hoothoot</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Hoothoot</key>
+        <value>NidoranF</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>NidoranF</key>
+        <value>Horsea</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Tangrowth</key>
+        <value>Tyrantrum</value>
+        <locations>National Park</locations>
+    </Chain>
+    <Chain>
+        <key>Misdreavus</key>
+        <value>Sandslash</value>
+        <locations>National Park</locations>
+    </Chain>
+    <Chain>
+        <key>Sandslash</key>
+        <value>Hitmontop</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Gible</key>
+        <value>Mudkip</value>
+        <locations>National Park</locations>
+    </Chain>
+    <Chain>
+        <key>Mudkip</key>
+        <value>Chimchar</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Chimchar</key>
+        <value>Teddiursa</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Teddiursa</key>
+        <value>Sandygast</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Togetic</key>
+        <value>Weepinbell</value>
+        <locations>Route 9</locations>
+    </Chain>
+    <Chain>
+        <key>Weepinbell</key>
+        <value>Kadabra</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Kadabra</key>
+        <value>Gabite</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Shroomish</key>
+        <value>Dratini</value>
+        <locations>Route 9</locations>
+    </Chain>
+    <Chain>
+        <key>Dratini</key>
+        <value>Clefairy</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Clefairy</key>
+        <value>Gible</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Mankey</key>
+        <value>Remoraid</value>
+        <locations>Route 9</locations>
+    </Chain>
+    <Chain>
+        <key>Remoraid</key>
+        <value>Goomy</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Goomy</key>
+        <value>Vulpix</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Vulpix</key>
+        <value>Klink</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Klink</key>
+        <value>Riolu</value>
+        <locations>Route 9</locations>
+    </Chain>
+    <Chain>
+        <key>Noibat</key>
+        <value>Zubat</value>
+        <locations>Route 9</locations>
+    </Chain>
+    <Chain>
+        <key>Zubat</key>
+        <value>Shedinja</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Riolu</key>
+        <value>Ferroseed</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Ferroseed</key>
+        <value>Piplup</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Piplup</key>
+        <value>Trapinch</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Trapinch</key>
+        <value>Shroomish</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Sneasel</key>
+        <value>Doublade</value>
+        <locations>Route 34</locations>
+    </Chain>
+    <Chain>
+        <key>Ariados</key>
+        <value>Machoke</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Gloom</key>
+        <value>Ariados</value>
+        <locations>Route 33</locations>
+    </Chain>
+    <Chain>
+        <key>Fletchinder</key>
+        <value>Aipom</value>
+        <locations>Route 33</locations>
+    </Chain>
+    <Chain>
+        <key>Aipom</key>
+        <value>Pidgeotto</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Pidgeotto</key>
+        <value>Aron</value>
+        <locations>N/A</locations>
+    </Chain>
+    <Chain>
+        <key>Aron</key>
+        <value>Growlithe</value>
+        <locations>N/A</locations>
+    </Chain>
+</chain>
