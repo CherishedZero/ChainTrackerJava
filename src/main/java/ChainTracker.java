@@ -88,20 +88,14 @@ public class ChainTracker {
                     Selection:\s""");
             Scanner input = new Scanner(System.in);
             menuChoice = input.next();
-            if (menuChoice.equals("1")) {
-                AddLinks(pokemonChain);
-            } else if (menuChoice.equals("2")) {
-                ViewLinks(pokemonChain);
-            } else if (menuChoice.equals("3")) {
-                EditLink(pokemonChain);
-            } else if (menuChoice.equals("4")) {
-                RemoveLink(pokemonChain);
-            } else if (menuChoice.equals("5")) {
-                ViewChains(pokemonChain);
-            } else if (menuChoice.equals("6")) {
-                ViewLocations(pokemonChain);
-            } else if (menuChoice.equals("7")) {
-                FindChains(pokemonChain);
+            switch (menuChoice) {
+                case "1" -> AddLinks(pokemonChain);
+                case "2" -> ViewLinks(pokemonChain);
+                case "3" -> EditLink(pokemonChain);
+                case "4" -> RemoveLink(pokemonChain);
+                case "5" -> ViewChains(pokemonChain);
+                case "6" -> ViewLocations(pokemonChain);
+                case "7" -> FindChains(pokemonChain);
             }
         } while (!menuChoice.equals("0"));
         if (!pokemonChain.getChain().isEmpty()) {
@@ -120,18 +114,18 @@ public class ChainTracker {
         String startingPokemon = keyPokemon;
         if (!keyPokemon.isEmpty() && !CheckExisting(currentChain, keyPokemon)) {
             do {
-                keyPokemon = keyPokemon.substring(0, 1).toUpperCase() + keyPokemon.substring(1);
+                keyPokemon = toTitleCase(keyPokemon);
                 System.out.print("Next Pokemon: ");
                 String valuePokemon = input.nextLine();
                 if (valuePokemon.isEmpty()) {
                     active = false;
                 } else {
-                    valuePokemon = valuePokemon.substring(0, 1).toUpperCase() + valuePokemon.substring(1);
+                    valuePokemon = toTitleCase(valuePokemon);
                     String pokemonLocation = "N/A";
                     if (first) {
                         System.out.print("Chain starting location: ");
                         pokemonLocation = input.nextLine();
-                        pokemonLocation = pokemonLocation.substring(0, 1).toUpperCase() + pokemonLocation.substring(1);
+                        pokemonLocation = toTitleCase(pokemonLocation);
                         first = false;
                     }
                     ChainLink toAdd = new ChainLink();
@@ -182,7 +176,7 @@ public class ChainTracker {
     public static void RemoveLink (Chain currentChain) {
         System.out.printf("%nEnter the name of the starting pokemon of the link to be removed: ");
         Scanner input = new Scanner(System.in);
-        String keyPokemon = input.next();
+        String keyPokemon = input.nextLine();
         currentChain.getChain().removeIf(key -> (key.getKey().equals(keyPokemon)));
         System.out.printf("Removed any links (if any) with %s as the starting link.%n", keyPokemon);
     }
@@ -210,41 +204,45 @@ public class ChainTracker {
                     4) Remove Location
                     Selection:\s""", workingLink.getKey(), workingLink.getValue(), workingLink.getLocations());
             String option = input.nextLine();
-            if (option.equals("1")) {
-                System.out.print("Desired Start Pokemon: ");
-                String change = input.nextLine();
-                if (!change.isEmpty()) {
-                    workingLink.setKey(change);
-                    System.out.println("Change updated.");
-                }
-            } else if (option.equals("2")) {
-                System.out.print("Desired End Pokemon: ");
-                String change = input.nextLine();
-                if (!change.isEmpty()) {
-                    workingLink.setValue(change);
-                    System.out.println("Change completed.");
-                }
-            } else if (option.equals("3")) {
-                System.out.print("Desired Location: ");
-                String change = input.nextLine();
-                if (!change.isEmpty()) {
-                    if (workingLink.getLocations().contains("N/A")) {
-                        workingLink.removeLocation("N/A");
+            switch (option) {
+                case "1" -> {
+                    System.out.print("Desired Start Pokemon: ");
+                    String change = input.nextLine();
+                    if (!change.isEmpty()) {
+                        workingLink.setKey(change);
+                        System.out.println("Change updated.");
                     }
-                    workingLink.addLocation(change);
-                    System.out.println("Change completed.");
                 }
-            } else if (option.equals("4")) {
-                System.out.print("Location to remove: ");
-                String change = input.nextLine();
-                if (!change.isEmpty() && workingLink.getLocations().contains(change)) {
-                    workingLink.removeLocation(change);
-                    System.out.println("Change completed.");
-                } else {
-                    System.out.println("Could not remove that location, returning to main menu");
+                case "2" -> {
+                    System.out.print("Desired End Pokemon: ");
+                    String change = input.nextLine();
+                    if (!change.isEmpty()) {
+                        workingLink.setValue(change);
+                        System.out.println("Change completed.");
+                    }
                 }
-            } else {
-                System.out.println("Invalid selection, returning to main menu.");
+                case "3" -> {
+                    System.out.print("Desired Location: ");
+                    String change = input.nextLine();
+                    if (!change.isEmpty()) {
+                        if (workingLink.getLocations().contains("N/A")) {
+                            workingLink.removeLocation("N/A");
+                        }
+                        workingLink.addLocation(change);
+                        System.out.println("Change completed.");
+                    }
+                }
+                case "4" -> {
+                    System.out.print("Location to remove: ");
+                    String change = input.nextLine();
+                    if (!change.isEmpty() && workingLink.getLocations().contains(change)) {
+                        workingLink.removeLocation(change);
+                        System.out.println("Change completed.");
+                    } else {
+                        System.out.println("Could not remove that location, returning to main menu");
+                    }
+                }
+                default -> System.out.println("Invalid selection, returning to main menu.");
             }
         } else {
             System.out.println("Link not found, returning to main menu.");
@@ -263,7 +261,8 @@ public class ChainTracker {
         String next = currentChain.getValueByKey(key);
         boolean inOutput = currentOutput.toString().matches(String.format(".*(%s).*", next));
         if (currentChain.getKeys().contains(key) && !inOutput) {
-            CreateChainOutput(currentChain, currentOutput.append(" -> ").append(currentChain.getValueByKey(key)), currentChain.getValueByKey(key), iteration + 1);
+            CreateChainOutput(currentChain,
+                    currentOutput.append(" -> ").append(currentChain.getValueByKey(key)), currentChain.getValueByKey(key), iteration + 1);
         } else if (inOutput) {
             currentOutput.append(" -> ").append(currentChain.getValueByKey(key));
         } else {
@@ -337,10 +336,22 @@ public class ChainTracker {
         String endingLink = chain.substring(chain.lastIndexOf(" ") + 1);
         String output;
         if (startingLink.equals(endingLink)) {
-            output = chain.replaceAll(endingLink, colorText(endingLink, endColor, GRAY));
+            if (endingLink.equals("???")) {
+                output = chain.replaceAll("\\?\\?\\?", colorText(endingLink, endColor, GRAY));
+            } else {
+                output = chain.replaceAll(endingLink, colorText(endingLink, endColor, GRAY));
+            }
         } else {
-            output = chain.replaceAll(endingLink, colorText(endingLink, endColor, GRAY)).replace(startingLink, colorText(startingLink, GREEN, RESET));
+            if (endingLink.equals("???")) {
+                output = chain.replaceAll("\\?\\?\\?", colorText(endingLink, endColor, GRAY)).replace(startingLink, colorText(startingLink, GREEN, RESET));
+            } else {
+                output = chain.replaceAll(endingLink, colorText(endingLink, endColor, GRAY)).replace(startingLink, colorText(startingLink, GREEN, RESET));
+            }
         }
         return output + RESET;
+    }
+
+    private static String toTitleCase(String text) {
+        return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
 }
