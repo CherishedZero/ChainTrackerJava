@@ -230,28 +230,16 @@ public class ChainTracker {
                     String change = input.nextLine();
                     if (!change.isEmpty()) {
                         workingLink.setKey(change);
-                        System.out.println("Change updated.");
+                        System.out.println(colorText("Change completed.", GREEN, RESET));
                     }
-            if (option.equals("1")) {
-                System.out.print("Desired Start Pokemon: ");
-                String change = input.nextLine();
-                if (!change.isEmpty()) {
-                    workingLink.setKey(change);
-                    System.out.println(colorText("Change completed.", GREEN, RESET));
                 }
                 case "2" -> {
                     System.out.print("Desired End Pokemon: ");
                     String change = input.nextLine();
                     if (!change.isEmpty()) {
                         workingLink.setValue(change);
-                        System.out.println("Change completed.");
+                        System.out.println(colorText("Change completed.", GREEN, RESET));
                     }
-            } else if (option.equals("2")) {
-                System.out.print("Desired End Pokemon: ");
-                String change = input.nextLine();
-                if (!change.isEmpty()) {
-                    workingLink.setValue(change);
-                    System.out.println(colorText("Change completed.", GREEN, RESET));
                 }
                 case "3" -> {
                     System.out.print("Desired Location: ");
@@ -261,7 +249,7 @@ public class ChainTracker {
                             workingLink.removeLocation("N/A");
                         }
                         workingLink.addLocation(change);
-                        System.out.println("Change completed.");
+                        System.out.println(colorText("Change completed.", GREEN, RESET));
                     }
                 }
                 case "4" -> {
@@ -269,22 +257,12 @@ public class ChainTracker {
                     String change = input.nextLine();
                     if (!change.isEmpty() && workingLink.getLocations().contains(change)) {
                         workingLink.removeLocation(change);
-                        System.out.println("Change completed.");
+                        System.out.println(colorText("Change completed.", GREEN, RESET));
                     } else {
-                        System.out.println("Could not remove that location, returning to main menu");
+                        System.out.println(colorText("Could not remove that location, returning to main menu", RED, RESET));
                     }
-            } else if (option.equals("4")) {
-                System.out.print("Location to remove: ");
-                String change = input.nextLine();
-                if (!change.isEmpty() && workingLink.getLocations().contains(change)) {
-                    workingLink.removeLocation(change);
-                    System.out.println(colorText("Change completed.", GREEN, RESET));
-                } else {
-                    System.out.println(colorText("Could not remove that location, returning to main menu", RED, RESET));
                 }
-                default -> System.out.println("Invalid selection, returning to main menu.");
-            } else {
-                System.out.println(colorText("Invalid selection, returning to main menu.", RED, RESET));
+                default -> System.out.println(colorText("Invalid selection, returning to main menu.", RED, RESET));
             }
         } else {
             System.out.println(colorText("Link not found, returning to main menu.", YELLOW, RESET));
