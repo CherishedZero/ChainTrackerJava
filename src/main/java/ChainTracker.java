@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import org.fusesource.jansi.AnsiConsole;
 
 
 public class ChainTracker {
@@ -15,8 +16,12 @@ public class ChainTracker {
     public static final String GREEN = "\u001B[32m";
     public static final String GRAY = "\u001b[38;5;244m";
     public static final String RED = "\u001B[31m";
+    public static final String YELLOW = "\u001B[33m";
     public static void main(String[] args) {
+        AnsiConsole.systemInstall();
+        // Swap the following lines for use in IDE or as JAR
         String dataFilePath = "./src/main/java/ChainFiles";
+//        String dataFilePath = "./ChainFiles";
         Path dataFiles = Paths.get(dataFilePath);
         Chain pokemonChain = new Chain();
         String currentFile = "";
@@ -39,9 +44,10 @@ public class ChainTracker {
                     System.out.println("New\nExit");
                     boolean validSelection = false;
                     while (!validSelection) {
+                        System.out.println(colorText("Hit enter with no entry to load first file on list", YELLOW, RESET));
                         System.out.print("File name to load: ");
                         Scanner input = new Scanner(System.in);
-                        String selection = input.next();
+                        String selection = input.nextLine();
                         if (fileNames.contains(selection)) {
                             validSelection = true;
                             Path filePath = Paths.get(dataFilePath + "/" + selection + ".xml");
@@ -54,11 +60,20 @@ public class ChainTracker {
                             validSelection = true;
                         } else if (selection.equalsIgnoreCase("new")) {
                             validSelection = true;
-                            System.out.println("Please enter a file name to be created: ");
+                            System.out.println(colorText("Please enter a file name to be created: ", YELLOW, RESET));
                             Scanner fileInput = new Scanner(System.in);
                             currentFile = fileInput.next();
-                        }  else {
-                            System.out.println("Invalid selection\nPlease make a valid selection");
+                        } else if (selection.isEmpty()) {
+                            validSelection = true;
+                            String fileName = fileNames.get(0);
+                            Path filePath = Paths.get(dataFilePath + "/" + fileName + ".xml");
+                            try (BufferedReader file = Files.newBufferedReader(filePath)) {
+                                pokemonChain = JAXB.unmarshal(file, Chain.class);
+                                currentFile = selection;
+                                System.out.println("Chains Loaded.");
+                            }
+                        } else {
+                            System.out.println(colorText("Invalid selection\nPlease make a valid selection", RED, RESET));
                         }
                     }
                 }
@@ -107,13 +122,14 @@ public class ChainTracker {
         if (!pokemonChain.getChain().isEmpty()) {
             Path saveFile = Paths.get(dataFilePath+"/"+currentFile+".xml");
             SaveChain(pokemonChain, saveFile);
+            AnsiConsole.systemUninstall();
         }
     }
 
     public static void AddLinks (Chain currentChain) {
         boolean active = true;
         boolean first = true;
-        System.out.printf("%nHit enter with no entry to exit.%n");
+        System.out.printf(colorText("%nHit enter with no entry to exit.%n", YELLOW, RESET));
         System.out.print("Starting Pokemon: ");
         Scanner input = new Scanner(System.in);
         String keyPokemon = input.nextLine();
@@ -131,6 +147,9 @@ public class ChainTracker {
                     if (first) {
                         System.out.print("Chain starting location: ");
                         pokemonLocation = input.nextLine();
+                        if (pokemonLocation.isEmpty()) {
+                            pokemonLocation = "N/A";
+                        }
                         pokemonLocation = pokemonLocation.substring(0, 1).toUpperCase() + pokemonLocation.substring(1);
                         first = false;
                     }
@@ -155,17 +174,17 @@ public class ChainTracker {
         String chainOutput = CreateChainOutput(currentChain, new StringBuilder(), keyPokemon, 0).toString();
         String lastLink = chainOutput.substring(chainOutput.lastIndexOf(" ") + 1);
         String loopInfo = "";
-        if (lastLink.equals("???")) {
+        if (lastLink.equals("New")) {
             chainOutput = colorizeChain(chainOutput, GREEN);
         } else {
             loopInfo = " that ends in a loop";
             chainOutput = colorizeChain(chainOutput, RED);
         }
-        System.out.printf("You've entered an existing chain%s:%n%s%n", loopInfo, chainOutput);
+        System.out.printf("%sYou've entered an existing chain%s%s:%n%s%n", YELLOW, loopInfo, RESET, chainOutput);
     }
 
     public static void ViewLinks (Chain currentChain) {
-        System.out.printf("%nKnown Links%n");
+        System.out.printf(colorText("%nKnown Links%n", YELLOW, RESET));
         int counter = 0;
         for (ChainLink link: currentChain.getChain()) {
             counter++;
@@ -215,14 +234,14 @@ public class ChainTracker {
                 String change = input.nextLine();
                 if (!change.isEmpty()) {
                     workingLink.setKey(change);
-                    System.out.println("Change updated.");
+                    System.out.println(colorText("Change completed.", GREEN, RESET));
                 }
             } else if (option.equals("2")) {
                 System.out.print("Desired End Pokemon: ");
                 String change = input.nextLine();
                 if (!change.isEmpty()) {
                     workingLink.setValue(change);
-                    System.out.println("Change completed.");
+                    System.out.println(colorText("Change completed.", GREEN, RESET));
                 }
             } else if (option.equals("3")) {
                 System.out.print("Desired Location: ");
@@ -239,15 +258,15 @@ public class ChainTracker {
                 String change = input.nextLine();
                 if (!change.isEmpty() && workingLink.getLocations().contains(change)) {
                     workingLink.removeLocation(change);
-                    System.out.println("Change completed.");
+                    System.out.println(colorText("Change completed.", GREEN, RESET));
                 } else {
-                    System.out.println("Could not remove that location, returning to main menu");
+                    System.out.println(colorText("Could not remove that location, returning to main menu", RED, RESET));
                 }
             } else {
-                System.out.println("Invalid selection, returning to main menu.");
+                System.out.println(colorText("Invalid selection, returning to main menu.", RED, RESET));
             }
         } else {
-            System.out.println("Link not found, returning to main menu.");
+            System.out.println(colorText("Link not found, returning to main menu.", YELLOW, RESET));
         }
     }
 
@@ -267,20 +286,20 @@ public class ChainTracker {
         } else if (inOutput) {
             currentOutput.append(" -> ").append(currentChain.getValueByKey(key));
         } else {
-            currentOutput.append(" -> ").append("???");
+            currentOutput.append(" -> ").append("New");
         }
         return currentOutput;
     }
 
     public static void ViewChains (Chain currentChain) {
         int iterator = 0;
-        System.out.printf("%nAll currently known chains:%n");
+        System.out.printf(colorText("%nAll currently known chains:%n", YELLOW, RESET));
         for (ChainLink link: currentChain.getChain()) {
             if (!link.getLocations().contains("N/A")) {
                 iterator++;
                 String chainOutput = CreateChainOutput(currentChain, new StringBuilder(), link.getKey(), 0).toString();
                 String lastLink = chainOutput.substring(chainOutput.lastIndexOf(" ") + 1);
-                if (lastLink.equals("???")) {
+                if (lastLink.equals("New")) {
                     chainOutput = colorizeChain(chainOutput, GREEN);
                 } else {
                     chainOutput = colorizeChain(chainOutput, RED);
@@ -291,7 +310,7 @@ public class ChainTracker {
     }
 
     public static void ViewLocations (Chain currentChain) {
-        System.out.printf("%nAll locations with chain starters:%n");
+        System.out.printf(colorText("%nAll locations with chain starters:%n", YELLOW, RESET));
         for (String location: currentChain.getLocations()) {
             List<String> pokemonAtLocation = new ArrayList<>();
             for (ChainLink link: currentChain.getChain()) {
@@ -308,12 +327,12 @@ public class ChainTracker {
         Scanner input = new Scanner(System.in);
         String desiredPokemon = input.nextLine();
         if (currentChain.getValues().contains(desiredPokemon)) {
-            System.out.printf("%nAll potential chains leading to %s:%n", desiredPokemon);
+            System.out.printf("%n%sAll potential chains leading to %s%s:%n", YELLOW, desiredPokemon, RESET);
             for (String route : CreateRoutes(currentChain, colorText(desiredPokemon, GREEN, RESET), desiredPokemon, new ArrayList<>())) {
                 System.out.println(route);
             }
         } else {
-            System.out.println("Pokemon not found in data, returning to main menu.");
+            System.out.println(colorText("Pokemon not found in data, returning to main menu.", RED, RESET));
         }
     }
 
