@@ -26,7 +26,6 @@ public class ChainTracker {
         Chain pokemonChain = new Chain();
         String currentFile = "";
 
-        // Reading File Section
         if (!Files.exists(dataFiles)) {
             new File(dataFilePath).mkdirs();
         }
@@ -126,26 +125,21 @@ public class ChainTracker {
         System.out.printf(colorText("%nHit enter with no entry to exit.%n", YELLOW, RESET));
         System.out.print("Starting Pokemon: ");
         Scanner input = new Scanner(System.in);
-        String keyPokemon = input.nextLine();
-        String startingPokemon = keyPokemon;
+        String keyPokemon = toTitleCase(input.nextLine());
         if (!keyPokemon.isEmpty() && !CheckExisting(currentChain, keyPokemon)) {
             do {
-                keyPokemon = toTitleCase(keyPokemon);
                 System.out.print("Next Pokemon: ");
-                String valuePokemon = input.nextLine();
+                String valuePokemon = toTitleCase(input.nextLine());
                 if (valuePokemon.isEmpty()) {
                     active = false;
                 } else {
-                    valuePokemon = toTitleCase(valuePokemon);
                     String pokemonLocation = "N/A";
                     if (first) {
                         System.out.print("Chain starting location: ");
-                        pokemonLocation = input.nextLine();
-                        pokemonLocation = toTitleCase(pokemonLocation);
+                        pokemonLocation = toTitleCase(input.nextLine());
                         if (pokemonLocation.isEmpty()) {
                             pokemonLocation = "N/A";
                         }
-                        pokemonLocation = pokemonLocation.substring(0, 1).toUpperCase() + pokemonLocation.substring(1);
                         first = false;
                     }
                     ChainLink toAdd = new ChainLink();
@@ -155,7 +149,7 @@ public class ChainTracker {
                     currentChain.getChain().add(toAdd);
                     keyPokemon = valuePokemon;
                     if (CheckExisting(currentChain, valuePokemon)) {
-                        WriteChain(currentChain, startingPokemon);
+                        WriteChain(currentChain, keyPokemon);
                         active = false;
                     }
                 }
@@ -169,7 +163,7 @@ public class ChainTracker {
         String chainOutput = CreateChainOutput(currentChain, new StringBuilder(), keyPokemon, 0).toString();
         String lastLink = chainOutput.substring(chainOutput.lastIndexOf(" ") + 1);
         String loopInfo = "";
-        if (lastLink.equals("New")) {
+        if (lastLink.equals("???")) {
             chainOutput = colorizeChain(chainOutput, GREEN);
         } else {
             loopInfo = " that ends in a loop";
@@ -196,7 +190,7 @@ public class ChainTracker {
     public static void RemoveLink (Chain currentChain) {
         System.out.printf("%nEnter the name of the starting pokemon of the link to be removed: ");
         Scanner input = new Scanner(System.in);
-        String keyPokemon = input.nextLine();
+        String keyPokemon = toTitleCase(input.nextLine());
         currentChain.getChain().removeIf(key -> (key.getKey().equals(keyPokemon)));
         System.out.printf("Removed any links (if any) with %s as the starting link.%n", keyPokemon);
     }
@@ -213,7 +207,7 @@ public class ChainTracker {
     public static void EditLink (Chain currentChain) {
         System.out.printf("%nEnter the name of the starting pokemon of the link to be edited: ");
         Scanner input = new Scanner(System.in);
-        String keyPokemon = input.nextLine();
+        String keyPokemon = toTitleCase(input.nextLine());
         ChainLink workingLink = currentChain.getLinkByKey(keyPokemon);
         if (!workingLink.getKey().equals("No Link")) {
             System.out.printf("""
@@ -227,7 +221,7 @@ public class ChainTracker {
             switch (option) {
                 case "1" -> {
                     System.out.print("Desired Start Pokemon: ");
-                    String change = input.nextLine();
+                    String change = toTitleCase(input.nextLine());
                     if (!change.isEmpty()) {
                         workingLink.setKey(change);
                         System.out.println(colorText("Change completed.", GREEN, RESET));
@@ -235,7 +229,7 @@ public class ChainTracker {
                 }
                 case "2" -> {
                     System.out.print("Desired End Pokemon: ");
-                    String change = input.nextLine();
+                    String change = toTitleCase(input.nextLine());
                     if (!change.isEmpty()) {
                         workingLink.setValue(change);
                         System.out.println(colorText("Change completed.", GREEN, RESET));
@@ -243,7 +237,7 @@ public class ChainTracker {
                 }
                 case "3" -> {
                     System.out.print("Desired Location: ");
-                    String change = input.nextLine();
+                    String change = toTitleCase(input.nextLine());
                     if (!change.isEmpty()) {
                         if (workingLink.getLocations().contains("N/A")) {
                             workingLink.removeLocation("N/A");
@@ -254,7 +248,7 @@ public class ChainTracker {
                 }
                 case "4" -> {
                     System.out.print("Location to remove: ");
-                    String change = input.nextLine();
+                    String change = toTitleCase(input.nextLine());
                     if (!change.isEmpty() && workingLink.getLocations().contains(change)) {
                         workingLink.removeLocation(change);
                         System.out.println(colorText("Change completed.", GREEN, RESET));
@@ -286,7 +280,7 @@ public class ChainTracker {
         } else if (inOutput) {
             currentOutput.append(" -> ").append(currentChain.getValueByKey(key));
         } else {
-            currentOutput.append(" -> ").append("New");
+            currentOutput.append(" -> ").append("???");
         }
         return currentOutput;
     }
@@ -299,7 +293,7 @@ public class ChainTracker {
                 iterator++;
                 String chainOutput = CreateChainOutput(currentChain, new StringBuilder(), link.getKey(), 0).toString();
                 String lastLink = chainOutput.substring(chainOutput.lastIndexOf(" ") + 1);
-                if (lastLink.equals("New")) {
+                if (lastLink.equals("???")) {
                     chainOutput = colorizeChain(chainOutput, GREEN);
                 } else {
                     chainOutput = colorizeChain(chainOutput, RED);
@@ -325,7 +319,7 @@ public class ChainTracker {
     public static void FindChains (Chain currentChain) {
         System.out.printf("%nWhich pokemon are you looking to find? ");
         Scanner input = new Scanner(System.in);
-        String desiredPokemon = input.nextLine();
+        String desiredPokemon = toTitleCase(input.nextLine());
         if (currentChain.getValues().contains(desiredPokemon)) {
             System.out.printf("%n%sAll potential chains leading to %s%s:%n", YELLOW, desiredPokemon, RESET);
             for (String route : CreateRoutes(currentChain, colorText(desiredPokemon, GREEN, RESET), desiredPokemon, new ArrayList<>())) {
@@ -372,6 +366,27 @@ public class ChainTracker {
     }
 
     private static String toTitleCase(String text) {
-        return text.substring(0, 1).toUpperCase() + text.substring(1);
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        StringBuilder result = new StringBuilder();
+        boolean capitalizeNext = true;
+
+        for (char c : text.toCharArray()) {
+            if (Character.isLetter(c)) {
+                if (capitalizeNext) {
+                    result.append(Character.toTitleCase(c));
+                    capitalizeNext = false;
+                } else {
+                    result.append(Character.toLowerCase(c));
+                }
+            } else {
+                result.append(c);
+                capitalizeNext = !Character.isLetterOrDigit(c);
+            }
+        }
+
+        return result.toString();
     }
 }
