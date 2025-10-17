@@ -68,7 +68,7 @@ public class ChainTracker {
                             Path filePath = Paths.get(dataFilePath + "/" + fileName + ".xml");
                             try (BufferedReader file = Files.newBufferedReader(filePath)) {
                                 pokemonChain = JAXB.unmarshal(file, Chain.class);
-                                currentFile = selection;
+                                currentFile = fileName;
                                 System.out.println("Chains Loaded.");
                             }
                         } else {
@@ -107,7 +107,7 @@ public class ChainTracker {
                 case "2" -> ViewLinks(pokemonChain);
                 case "3" -> EditLink(pokemonChain);
                 case "4" -> RemoveLink(pokemonChain);
-                case "5" -> ViewChains(pokemonChain);
+                case "5" -> ChainViewSelect(pokemonChain);
                 case "6" -> ViewLocations(pokemonChain);
                 case "7" -> FindChains(pokemonChain);
             }
@@ -300,6 +300,34 @@ public class ChainTracker {
                 }
                 System.out.printf("%d) %s%n", iterator, chainOutput);
             }
+        }
+    }
+
+    public static void ViewActiveChains (Chain currentChain) {
+        int iterator = 0;
+        System.out.printf(colorText("%nAll currently known active chains:%n", YELLOW, RESET));
+        for (ChainLink link: currentChain.getChain()) {
+            if (!link.getLocations().contains("N/A")) {
+                iterator++;
+                String chainOutput = CreateChainOutput(currentChain, new StringBuilder(), link.getKey(), 0).toString();
+                String lastLink = chainOutput.substring(chainOutput.lastIndexOf(" ") + 1);
+                if (lastLink.equals("???")) {
+                    chainOutput = colorizeChain(chainOutput, GREEN);
+                    System.out.printf("%d) %s%n", iterator, chainOutput);
+                }
+            }
+        }
+    }
+
+    public static void ChainViewSelect(Chain currentChain) {
+        System.out.printf(colorText("%nHit enter with no entry to exit.", YELLOW, RESET));
+        System.out.printf("%nPlease select which chain view you would like.%n1) Active Chains%n2) All Chains%nSelection: ");
+        Scanner input = new Scanner(System.in);
+        String selection = toTitleCase(input.nextLine());
+        switch (selection) {
+            case "1" -> ViewActiveChains(currentChain);
+            case "2" -> ViewChains(currentChain);
+            default -> System.out.println(colorText("Invalid selection, returning to main menu.", RED, RESET));
         }
     }
 
