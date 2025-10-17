@@ -87,7 +87,7 @@ public class ChainTracker {
 
 
         // Main functionality
-        String menuChoice = "";
+        String menuChoice;
         do {
             System.out.print("""
                     \nEnter the number of the function you wish to perform:
